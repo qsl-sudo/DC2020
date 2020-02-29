@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8"> 
+<title>DC2020 Team 36  </title>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@antv/g2plot@latest/dist/g2plot.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
+<!-- https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cyborg/bootstrap.min.css -->
+<!-- https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/lux/bootstrap.min.css -->
+<link href='https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/lux/bootstrap.min.css' rel='stylesheet' />
+<script src='https://unpkg.com/@antv/l7''></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="https://kit.fontawesome.com/54747d4952.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sp-1.0.1/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sp-1.0.1/datatables.min.js"></script>
+<script src="./js/papa.js" crossorigin="anonymous"></script>
+</head>
+<body>	
+  <main role="main" class="flex-shrink-0">
+  <nav class="navbar navbar-light bg-light justify-content-center" id="nav">
+    <span class="h1">Data Challenge 2020 - Team 36</span>
+  </nav>
+    <div class="container-fluid" id="gui">
+             <div class="row">
+              <div class="col-2 justify-content-start"><button class="input-group-text" id="btnReset" onclick="resetData()">Reset</button></div>
+              <div class="col">
+              <div class="form-group" id="uploadPanel">
+                           
+                            <div class="input-group justify-content-center">
+                              <button class="input-group-text" id="goPredict" onclick="goPredict()">Observe Mode</button>
+                              <span class="input-group-text" id="currentDataSetName"></span>
+                              <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputDataset">
+                                <label class="custom-file-label" id="currentFileName">Choose dataset file..</label>
+                              </div>
+                              <div class="input-group-append">
+                                <button class="input-group-text" id="btnUpload" onclick="uploadData()">Upload</button>
+                              </div>
+                            </div>
+
+                           
+                          </div>
+                          <div  id="predictPanel">
+                              <div class="form-inline justify-content-around">
+                                  <span> Date </span>   
+                                  <input id="datepickerPred" width="130" />   
+                                  <span> Precipitation </span>  
+                                    <input type="text" class="form-control" placeholder="inch/h" id="precipitation">
+                                    <span> Windspeed </span>  
+                                    <input type="text" class="form-control" placeholder="mph" id="windSpeed">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">Gameday</label>
+                                      </div>
+                                      <div class="input-group-append">
+                                          <button class="input-group-text" id="btnPredict" onclick="predictData()">Predict</button>
+                                        </div>
+                                   
+                                </div>
+
+                          </div>
+                        </div>
+                          <div class="col-2 justify-content-end"></div>
+             </div>
+            </div>
+             
+
+
+            <div class="container-fluid" id="vis">
+                <div class="row my-md-4 px-md-5"> 
+                    <div class="col-4">
+                   
+                     
+                    <form class="form-inline justify-content-around" id="timePanel">
+                        
+                        <span> Date </span>   
+                        <input id="datepicker" width="130" />   
+                       
+                        <span> Time </span>   
+                        <select id="inputTime" class="custom-select">
+                         
+                      </select>
+                     
+                        </form>     
+                      </div> 
+                      <div class="col-4"> 
+                          <form class="form-inline justify-content-end" id="timeLinePanel">
+                              <input type="range" class="custom-range mt-sm-2" min="0" max="95" step="1" id="timeLineRange">
+                            </form> 
+
+
+                      </div>
+                      <div class="col-4">
+                    
+                        
+                        
+                    
+                          <form class="form-inline justify-content-around" id="locationPanel">
+                              <span>  Location  </span>   
+                    
+                              <select id="inputLoc" class="custom-select">
+                                   
+                                </select>
+                        </form>
+                      </div>
+                </div>
+            <div class="row justify-content-center my-md-4 px-md-5" id="mainWindow">
+               
+              <div class="col-6" id='map'> </div>
+              <div class="col-6" id='app'> </div>
+              
+               </div>
+               <div class="row justify-content-center my-md-4 px-md-5"> 
+                
+                <div class="col-6">
+                   
+                </div>
+                
+              
+            </div>
+
+
+            
+          </div>
+            <div class="container-fluid" id="grid">
+      <div class="my-md-4 px-md-5">
+          
+            <table id="dataSetTable" class="table table-sm table-striped table-bordered dataTable">
+                <thead>
+                    <tr>
+                        <th>time</th>
+                        <th>location</th>
+                        <th>pedestrians</th>
+                        <th>bicyclists</th>
+                        <th>cars</th>
+                        <th>buses</th>
+                        <th>trucks</th>
+                        
+                    </tr>
+                </thead>
+            </table>
+        </div>
+      </div>
+      </main>
+ 
+      
+     
+    <script src="./js/main.js"></script>  
+    <script src="./js/m5p.js"></script>  
+</body>
+<style>
+  /* remove before publish*/
+  .mapboxgl-ctrl-logo {
+  display: none !important;
+  }
+  .mapboxgl-ctrl-bottom-right {
+  display: none !important;
+  }
+  .l7-control-container {
+    display: none !important;
+  }
+  
+  
+</style>
+</html>
